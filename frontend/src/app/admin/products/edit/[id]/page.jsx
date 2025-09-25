@@ -14,9 +14,10 @@ export default function EditProductPage({ params }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
-  const token = useSession().data.user.laravelAccessToken;
-  const canUpdatePrice = useSession().data.user.canUpdatePrice;
-
+  const { data: session, status } = useSession();
+  const token = session.user.laravelAccessToken;
+  const canUpdatePrice = session.user.canUpdatePrice;
+console.warn(status)
   useEffect(() => {
     const fetchProduct = async () => {
       try {

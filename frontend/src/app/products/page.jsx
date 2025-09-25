@@ -11,11 +11,11 @@ export default function ProductsPage() {
   const [lastPage, setLastPage] = useState(1);
   const [error, setError] = useState('')
   const router = useRouter();
-
-  const user = useSession().data?.user;
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const token = user?.laravelAccessToken;
   const isAdmin = ['super_admin', 'catalog'].includes(user?.role?.code);
-  const token = user.laravelAccessToken;
-
+console.warn(status)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
