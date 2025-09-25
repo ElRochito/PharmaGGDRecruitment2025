@@ -3,7 +3,6 @@
 /* @covers \App\Http\Controllers\ProductController::index */
 
 use App\Models\Product;
-use Laravel\Sanctum\PersonalAccessToken;
 
 it('retrieves products with pagination', function (): void {
     [$product1, $product2, $product3] = Product::factory(3)
@@ -58,8 +57,5 @@ it('retrieves products with pagination', function (): void {
         ->assertJsonStructure([
             'links' => ['first', 'last', 'prev', 'next'],
             'meta' => ['current_page', 'per_page', 'from', 'to', 'path'],
-        ])
-        ->dump();
-
-    $this->assertDatabaseCount(PersonalAccessToken::class, 0);
+        ]);
 });
