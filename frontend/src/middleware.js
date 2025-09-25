@@ -36,8 +36,6 @@ export default async function middleware(req) {
 						headers: { Authorization: `Bearer ${adminToken.laravelAccessToken}` }
 					})
 
-                    console.log(adminToken.laravelAccessToken)
-
 					if (verify.ok) {
 						// Token valide, rediriger vers dashboard
 						return NextResponse.redirect(new URL("/admin/dashboard", req.url))
@@ -78,7 +76,7 @@ export default async function middleware(req) {
 	}
 
 	// === GESTION DES ROUTES USER ===
-	if (url.startsWith("/user")) {
+	if (url.startsWith("/client")) {
 		const clientSession = await clientAuth()
 		const clientToken = await getToken({
 			req,
@@ -87,20 +85,20 @@ export default async function middleware(req) {
 		})
 
 		// Page de login user
-		if (url === "/user" || url === "/user/login") {
+		if (url === "/client" || url === "/client/login") {
 			if (clientToken?.laravelAccessToken) {
 				// Vérifier si le token Laravel est encore valide
 				try {
-					const verify = await fetch(`${process.env.BACKEND_URL}/user/me`, {
+					const verify = await fetch(`${process.env.BACKEND_URL}/auth/me`, {
 						headers: { Authorization: `Bearer ${clientToken.laravelAccessToken}` }
 					})
 
 					if (verify.ok) {
 						// Token valide, rediriger vers dashboard
-						return NextResponse.redirect(new URL("/user/dashboard", req.url))
+						return NextResponse.redirect(new URL("/client/dashboard", req.url))
 					}
 				} catch (error) {
-					console.error("Erreur vérification token user:", error)
+					console.error("Erreur vérification token client:", error)
 				}
 			}
 			// Pas de token valide, afficher la page de login
@@ -109,24 +107,24 @@ export default async function middleware(req) {
 
 		// Routes protégées user (dashboard, etc.)
 		if (!clientSession || !clientToken?.laravelAccessToken) {
-			return NextResponse.redirect(new URL("/user", req.url))
+			return NextResponse.redirect(new URL("/client", req.url))
 		}
 
 		// Vérifier la validité du token Laravel
 		try {
-			const verify = await fetch(`${process.env.BACKEND_URL}/user/me`, {
+			const verify = await fetch(`${process.env.BACKEND_URL}/auth/me`, {
 				headers: { Authorization: `Bearer ${clientToken.laravelAccessToken}` }
 			})
 
 			if (!verify.ok) {
 				// Token expiré, supprimer la session et rediriger
-				const redirectResponse = NextResponse.redirect(new URL("/user", req.url))
+				const redirectResponse = NextResponse.redirect(new URL("/client", req.url))
 				redirectResponse.cookies.delete("client.session-token")
 				return redirectResponse
 			}
 		} catch (error) {
-			console.error("Erreur vérification token user:", error)
-			const redirectResponse = NextResponse.redirect(new URL("/user", req.url))
+			console.error("Erreur vérification token client:", error)
+			const redirectResponse = NextResponse.redirect(new URL("/client", req.url))
 			redirectResponse.cookies.delete("client.session-token")
 			return redirectResponse
 		}

@@ -2,7 +2,7 @@ import Credentials from "next-auth/providers/credentials"
 
 export const clientAuthConfig = {
 	secret: process.env.NEXTAUTH_SECRET,
-	basePath: "/api/client/auth",
+	basePath: "/api/auth",
 	session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 365 }, // 365j
 	cookies: {
 		// cookie distinct pour le flux client
@@ -22,7 +22,7 @@ export const clientAuthConfig = {
 			name: "Email & Password",
 			credentials: { email: {}, password: {} },
 			async authorize(credentials) {
-				const res = await fetch(`${process.env.BACKEND_URL}/user/auth/login`, {
+				const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -32,6 +32,7 @@ export const clientAuthConfig = {
 				})
 				if (!res.ok) return null
 				const data = await res.json()
+			console.log(data)
 				return {
 					id: data.user.id.toString(),
 					name: data.user.name,
@@ -62,7 +63,7 @@ export const clientAuthConfig = {
 		signOut: async ({ token }) => {
 			if (token?.laravelAccessToken) {
 				try {
-					await fetch(`${process.env.BACKEND_URL}/user/logout`, {
+					await fetch(`${process.env.BACKEND_URL}/logout`, {
 						method: "POST",
 						headers: {
 							Authorization: `Bearer ${token.laravelAccessToken}`,

@@ -5,7 +5,6 @@ export const adminAuthConfig = {
 	basePath: "/api/admin/auth",
 	session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 365 }, // 365j
 	cookies: {
-		// cookie distinct pour le flux admin
 		sessionToken: {
 			name: "admin.session-token",
 			options: {
@@ -32,13 +31,15 @@ export const adminAuthConfig = {
 				})
 				if (!res.ok) return null
 				const data = await res.json()
+				const admin = data.data
 				return {
-					id: data.admin.id.toString(),
-					name: data.admin.name,
-					email: data.admin.email,
+					id: admin.id.toString(),
+					name: admin.name,
+					email: admin.email,
 					laravelAccessToken: data.token,
 					userType: 'admin',
-					role: data.admin.role,
+					role: admin.role,
+					canUpdatePrice: admin.permissions.includes('products.update_price'),
 				}
 			}
 		})
@@ -49,6 +50,7 @@ export const adminAuthConfig = {
 				token.role = user.role
 				token.userType = user.userType
 				token.laravelAccessToken = user.laravelAccessToken
+				token.canUpdatePrice = user.canUpdatePrice
 			}
 			return token
 		},
@@ -56,6 +58,7 @@ export const adminAuthConfig = {
 			session.user.role = token.role
 			session.user.userType = token.userType
 			session.user.laravelAccessToken = token.laravelAccessToken
+			session.user.canUpdatePrice = token.canUpdatePrice
 			return session
 		},
 		// Utilisé par le middleware pour protéger les routes admin
