@@ -45,7 +45,7 @@ export default function EditProductPage({ params }) {
     setSuccess('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           name,
@@ -53,12 +53,26 @@ export default function EditProductPage({ params }) {
           price: parseFloat(price),
           stock: parseInt(stock, 10),
         }),
-      }, {
         headers: {
+          'Accept': 'application/json',
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred parsing the response.' }));
+        if (response.status === 433) {
+          setError(errorData.message || 'Error 433: You do not have permission to perform this action.');
+        } else if (response.status === 422) {
+          console.warn(errorData);
+          setError(errorData.message || 'Error 422: Validation failed.');
+        } else {
+          setError(errorData.message || `An unexpected error occurred: ${response.statusText}`);
+        }
+        return;
+      }
+
       setSuccess('Product updated successfully!');
       router.push('/admin/dashboard');
     } catch (err) {
@@ -69,10 +83,10 @@ export default function EditProductPage({ params }) {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-white">Edit Product</h1>
-      {error && <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                      <span class="block sm:inline">{error}</span>
-                      <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                      <span className="block sm:inline">{error}</span>
+                      <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                        <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
                       </span>
                     </div>}
       {success && <p className="text-green-500 mb-4">{success}</p>}
