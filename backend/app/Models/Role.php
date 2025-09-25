@@ -2,26 +2,35 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property bool $all_permissions
+ * @property-read Collection<int, Admin> $admins
+ * @property-read Collection<int, Permission> $permissions
+ * @method static \Database\Factories\RoleFactory factory($count = 1, $state = [])
+ */
 class Role extends Model
 {
     /** @use HasFactory<\Database\Factories\PermissionFactory> */
     use HasFactory;
 
     public $timestamps = false;
-    
-    /**
-     * @var list<string>
-     */
+
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'code',
-        'all_permissions'
+        'all_permissions',
     ];
+
     /**
      * @return array<string, string>
      */
@@ -34,7 +43,7 @@ class Role extends Model
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'role_permission', 'role_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'role_permission', 'role_id', 'permission_id');
     }
 
     public function admins(): HasMany

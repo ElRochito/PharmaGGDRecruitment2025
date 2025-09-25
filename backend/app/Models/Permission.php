@@ -2,20 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property-read Collection<int, Role> $roles
+ */
 class Permission extends Model
 {
     /** @use HasFactory<\Database\Factories\PermissionFactory> */
     use HasFactory;
 
     public $timestamps = false;
-    
-    /**
-     * @var list<string>
-     */
+
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'code',

@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AdminResource;
 use App\Models\Admin;
 use App\Models\Role;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class AdminAuthController extends Controller
+class AdminAuthController
 {
-    /**
-     * Register a new admin
-     */
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-        $admin = Admin::create([
+        $admin = Admin::query()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -42,9 +40,6 @@ class AdminAuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Login admin
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -52,7 +47,10 @@ class AdminAuthController extends Controller
             'password' => 'required',
         ]);
 
-        $admin = Admin::with('role')->where('email', $request->email)->first();
+        $admin = Admin::query()
+            ->where('email', $request->email)
+            ->with('role.permissions')
+            ->first();
 
         if (!$admin || !Hash::check($request->password, $admin->password)) {
             throw ValidationException::withMessages([
@@ -65,49 +63,39 @@ class AdminAuthController extends Controller
 
         $token = $admin->createToken('admin_auth_token', ['admin'])->plainTextToken;
 
-        return response()->json([
+        return AdminResource::make($admin)->additional([
             'message' => 'Admin login successful',
-            'admin' => $admin,
             'token' => $token,
             'token_type' => 'Bearer',
         ]);
     }
 
-    /**
-     * Logout admin
-     */
-    public function logout(Request $request)
+    public function logout(#[CurrentUser] Admin $admin)
     {
-        $request->user()->currentAccessToken()->delete();
+        $admin->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Admin logged out successfully'
+            'message' => 'Admin logged out successfully',
         ]);
     }
 
-    /**
-     * Get authenticated admin
-     */
-    public function me(Request $request)
+    public function me(#[CurrentUser] Admin $admin)
     {
-        $admin = $request->user()->load('role');
-        
+        $admin->load('role');
+
         return response()->json([
             'admin' => $admin,
-            'user_type' => 'admin'
+            'user_type' => 'admin',
         ]);
     }
 
-    /**
-     * Refresh admin token
-     */
     public function refresh(Request $request)
     {
         $admin = $request->user();
-        
+
         // Revoke current token
         $request->user()->currentAccessToken()->delete();
-        
+
         // Create new token
         $token = $admin->createToken('admin_auth_token', ['admin'])->plainTextToken;
 
@@ -119,15 +107,12 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    /**
-     * Get all roles (for admin registration form)
-     */
     public function getRoles()
     {
         $roles = Role::all();
-        
+
         return response()->json([
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 }

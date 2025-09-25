@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends Controller
+class AuthController
 {
     /**
-     * Register a new user
+     * Register a new user.
      */
     public function register(Request $request)
     {
@@ -38,7 +39,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Login user
+     * Login user.
      */
     public function login(Request $request)
     {
@@ -69,38 +70,36 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout user
+     * Logout user.
      */
-    public function logout(Request $request)
+    public function logout(#[CurrentUser] User $user): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $user->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully'
+            'message' => 'Logged out successfully',
         ]);
     }
 
     /**
-     * Get authenticated user
+     * Get authenticated user.
      */
-    public function me(Request $request)
+    public function me(#[CurrentUser] User $user): JsonResponse
     {
         return response()->json([
-            'user' => $request->user(),
-            'user_type' => 'user'
+            'user' => $user,
+            'user_type' => 'user',
         ]);
     }
 
     /**
-     * Refresh token
+     * Refresh token.
      */
-    public function refresh(Request $request)
+    public function refresh(#[CurrentUser] User $user): JsonResponse
     {
-        $user = $request->user();
-        
         // Revoke current token
-        $request->user()->currentAccessToken()->delete();
-        
+        $user->currentAccessToken()->delete();
+
         // Create new token
         $token = $user->createToken('auth_token', ['user'])->plainTextToken;
 
