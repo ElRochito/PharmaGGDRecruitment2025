@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import '../../styles/auth.scss'
 import { adminAuth } from "../../server/adminAuth"
 import { redirect } from "next/navigation"
 
@@ -34,67 +33,65 @@ export default function AdminLoginPage() {
 	}
 
 	return (
-		<div className="login-page admin">
-			<div className="login-container">
-				<div className="login-card">
-					<div className="login-header">
-						<h1 className="login-title admin">
-							Connexion Administrateur
-						</h1>
-						<p className="login-subtitle admin">
-							Accès réservé aux administrateurs
-						</p>
-					</div>
+		<div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+              <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
+            </div>
 
-					<form className="login-form" onSubmit={handleSubmit}>
-						{error && (
-							<div className="error-message">
-								{error}
-							</div>
-						)}
+            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+              <form action="#" method="POST" onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                      <span class="block sm:inline">{error}</span>
+                      <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                      </span>
+                    </div>
+                )}
+                <div>
+                  <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
+                    Email address
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-						<div className="form-group">
-							<label htmlFor="email">Email</label>
-							<input
-								id="email"
-								name="email"
-								type="email"
-								required
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								className="form-input"
-							/>
-						</div>
+                <div>
+                  <div className="mt-2">
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      autoComplete="current-password"
+                      className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-						<div className="form-group">
-							<label htmlFor="password">Mot de passe</label>
-							<input
-								id="password"
-								name="password"
-								type="password"
-								required
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="form-input"
-							/>
-						</div>
-
-						<button
-							type="submit"
-							disabled={isLoading}
-							className="submit-button admin"
-						>
-							{isLoading ? "Connexion..." : "Se connecter"}
-						</button>
-
-						<div className="login-footer">
-							<a href="/" className="back-link admin">
-								← Retour à l'accueil
-							</a>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
+                <div>
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="cursor-pointer flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                >
+                    {isLoading ? "Connexion..." : "Se connecter"}
+                </button>
+                </div>
+              </form>
+            </div>
+        </div>
 	)
 }

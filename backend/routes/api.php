@@ -61,6 +61,7 @@ Route::middleware(['auth:sanctum', 'role.admin'])->prefix('admin/auth')->group(f
 // Protected routes for products
 Route::middleware(['auth:sanctum', 'role.admin'])->group(function (): void {
     Route::post('/products', [ProductController::class, 'store'])->middleware('permission:products.create');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('permission:products.read');
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('permission:products.update');
 });
 

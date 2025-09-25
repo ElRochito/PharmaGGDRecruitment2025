@@ -30,6 +30,11 @@ class ProductController
         return ProductResource::make($product);
     }
 
+    public function show(Product $product): JsonResource
+    {
+        return ProductResource::make($product);
+    }
+
     public function update(
         #[CurrentUser]
         Admin $admin,

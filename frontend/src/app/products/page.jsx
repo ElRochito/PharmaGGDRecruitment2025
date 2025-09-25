@@ -66,7 +66,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 text-white">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -78,7 +78,7 @@ export default function ProductsPage() {
             <p className="text-sm text-gray-500">Stock: {product.stock}</p>
             {
               isAdmin
-               ?  <Link href={`/admin/products/edit/${product.id}`} className="text-blue-500">Edit</Link>
+               ?  <Link href={`/admin/products/edit/${product.id}`} className="mt-2 bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer">Edit</Link>
                :
                user ? <button
                     onClick={() => handleAddToCart(product.id)}
@@ -94,7 +94,7 @@ export default function ProductsPage() {
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer"
+          className="bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer"
         >
           Previous
         </button>
@@ -102,7 +102,7 @@ export default function ProductsPage() {
         <button
           onClick={handleNextPage}
           disabled={currentPage === lastPage}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer"
+          className="bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer"
         >
           Next
         </button>

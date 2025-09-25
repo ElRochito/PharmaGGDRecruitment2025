@@ -88,37 +88,40 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 text-white">
       <h1 className="text-2xl font-bold mb-4">Your Shopping Cart</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {
         !cart.cart_items || cart.cart_items.length === 0 ? (
-          <p>Your cart is empty.<Link href="/products" className="text-blue-500">Start shopping</Link></p>
+          <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 text-black">
+          <p className="mb-4">Your cart is empty.</p>
+          <Link href="/products" className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded">Start shopping</Link>
+        </div>
         ) : (
           <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             {cart.cart_items.map((item) => (
-              <div key={item.id} className="flex justify-between items-center border-b py-2">
+              <div key={item.id} className="flex justify-between items-center border-b py-2 text-black">
                 <div>
                   <h2 className="text-xl font-semibold">{item.product.name}</h2>
-                  <p className="text-gray-600">${item.product.price} x {item.quantity}</p>
+                  <p className="text-gray-600">{item.product.price} € x {item.quantity}</p>
                 </div>
                 <div className="flex items-center">
                   <button
                     onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
+                    className="cursor-pointer bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
                   >
                     -
                   </button>
                   <span className="text-lg">{item.quantity}</span>
                   <button
                     onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded ml-2"
+                    className="cursor-pointer bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded ml-2"
                   >
                     +
                   </button>
                   <button
                     onClick={() => handleRemoveItem(item.id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-4"
+                    className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-1 px-2 rounded ml-4"
                   >
                     Remove
                   </button>
@@ -129,7 +132,7 @@ export default function CartPage() {
               <h2 className="text-2xl font-bold">Total: ${calculateTotal()}</h2>
               <button
                 onClick={handleClearCart}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded"
               >
                 Clear Cart
               </button>
