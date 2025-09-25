@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -32,48 +31,52 @@ class RolePermissionSeeder extends Seeder
             ['code' => 'permissions.create', 'name' => 'Create Permissions'],
             ['code' => 'permissions.update', 'name' => 'Update Permissions'],
             ['code' => 'permissions.delete', 'name' => 'Delete Permissions'],
+            ['code' => 'products.create', 'name' => 'Create Products'],
+            ['code' => 'products.read', 'name' => 'Read Products'],
+            ['code' => 'products.update', 'name' => 'Update Products'],
+            ['code' => 'products.delete', 'name' => 'Delete Products'],
+            ['code' => 'products.update_price', 'name' => 'Update Product Price'],
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::create($permission);
-        }
+        Permission::query()->insert($permissions);
 
         // Create roles
-        $superAdminRole = Role::create([
+        $superAdminRole = Role::query()->create([
             'code' => 'super_admin',
             'name' => 'Administrateur',
-            'all_permissions' => true
+            'all_permissions' => true,
         ]);
 
-        $catalogRole = Role::create([
+        $catalogRole = Role::query()->create([
             'code' => 'catalog',
             'name' => 'Catalogue',
-            'all_permissions' => false
+            'all_permissions' => false,
         ]);
 
         // Assign specific permissions to admin role
-        $adminPermissions = Permission::whereIn('code', [
-            'users.read', 'users.create', 'users.update',
-            'admins.read', 'roles.read', 'permissions.read'
-        ])->get();
+        $adminPermissions = Permission::query()
+            ->whereIn('code', [
+                'users.read',
+                'users.create',
+                'users.update',
+                'admins.read',
+                'roles.read',
+                'permissions.read',
+                'products.update_price',
+            ])
+            ->pluck('id');
 
-        foreach ($adminPermissions as $permission) {
-            DB::table('role_permission')->insert([
-                'role_id' => $superAdminRole->id,
-                'permission_id' => $permission->id
-            ]);
-        }
+        $superAdminRole->permissions()->attach($adminPermissions);
 
         // Assign specific permissions to moderator role
-        $catalogPermissions = Permission::whereIn('code', [
-            'users.read',
-        ])->get();
+        $catalogPermissions = Permission::query()
+            ->whereIn('code', [
+                'users.read',
+                'products.read',
+                'products.update',
+            ])
+            ->get();
 
-        foreach ($catalogPermissions as $permission) {
-            DB::table('role_permission')->insert([
-                'role_id' => $catalogRole->id,
-                'permission_id' => $permission->id
-            ]);
-        }
+        $catalogRole->permissions()->attach($catalogPermissions);
     }
 }
