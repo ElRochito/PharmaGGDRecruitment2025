@@ -44,7 +44,7 @@ class ProductController
     ): JsonResource {
         $data = ProductData::from($request);
 
-        $updateProduct->execute($product, $data);
+        $updateProduct->execute($product, $admin, $data);
 
         return ProductResource::make($product);
     }

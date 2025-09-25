@@ -31,8 +31,9 @@ it('updates a product', function (): void {
 
     $this->mock(UpdateProduct::class)
         ->shouldReceive('execute')
-        ->withArgs(function (Product $myProduct, ProductData $data) use ($product) {
+        ->withArgs(function (Product $myProduct, Admin $myAdmin, ProductData $data) use ($user, $product) {
             return $product->id === $myProduct->id
+                && $user->id === $myAdmin->id
                 && $data->name === 'Doliprane';
         })
         ->andReturn(Product::factory()->createOne())
@@ -48,43 +49,6 @@ it('updates a product', function (): void {
             'Authorization' => 'Bearer ' . $token,
         ])
         ->assertOk();
-});
-
-it('cant update price with bad permission', function (): void {
-    $product = Product::factory()->createOne([
-        'name' => 'Doliprane',
-        'description' => 'Doliprane',
-        'price' => 5.50,
-        'stock' => 10,
-    ]);
-
-    $permission = Permission::factory()->createOne([
-        'code' => 'products.update',
-    ]);
-
-    $role = Role::factory()
-        ->hasAttached($permission)
-        ->createOne(['all_permissions' => false]);
-
-    $user = Admin::factory()->for($role)->createOne();
-    $token = $user->createToken('azerty')->plainTextToken;
-
-    $this->mock(UpdateProduct::class)
-        ->shouldReceive('execute')
-        ->never();
-
-    $this
-        ->putJson("api/products/{$product->getRouteKey()}", [
-            'name' => 'Doliprane',
-            'description' => 'Doliprane',
-            'price' => 5.50,
-            'stock' => 10,
-        ], [
-            'Authorization' => 'Bearer ' . $token,
-        ])
-        ->assertJsonValidationErrors([
-            'price' => 'The price field is prohibited',
-        ]);
 });
 
 it('denies a unser to update a product', function (): void {

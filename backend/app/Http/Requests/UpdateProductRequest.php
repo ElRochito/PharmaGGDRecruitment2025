@@ -21,19 +21,22 @@ class UpdateProductRequest extends FormRequest
         Product $product,
     ): array {
         return [
-            'name' => ['sometimes', 'max:255', Rule::unique(Product::class)->ignore($product)],
+            'name' => [
+                'sometimes',
+                'max:255',
+                Rule::unique(Product::class)->ignore($product),
+            ],
             'description' => ['sometimes'],
             'price' => [
-                Rule::when(
-                    $admin->role->all_permissions === true || $admin->role->permissions->contains(
-                        'code',
-                        'products.update_price'
-                    ),
-                    ['nullable', 'numeric', 'min:0'],
-                    ['prohibited']
-                ),
+                'sometimes',
+                'numeric',
+                'min:0',
             ],
-            'stock' => ['sometimes', 'integer', 'min:0'],
+            'stock' => [
+                'sometimes',
+                'integer',
+                'min:0',
+            ],
         ];
     }
 }

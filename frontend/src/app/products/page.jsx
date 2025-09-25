@@ -75,7 +75,7 @@ export default function ProductsPage() {
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-gray-600">{product.description}</p>
             <p className="text-lg font-bold mt-2">{product.price} €</p>
-            <p className="text-sm text-gray-500">Stock: {product.stock}</p>
+            <p className="text-sm text-gray-500 mb-4">Stock: {product.stock}</p>
             {
               isAdmin
                ?  <Link href={`/admin/products/edit/${product.id}`} className="mt-2 bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50 cursor-pointer">Edit</Link>
