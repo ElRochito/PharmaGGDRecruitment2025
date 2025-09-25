@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import * as React from 'react'
 
 export default function EditProductPage({ params }) {
-  const { id } = params;
+  const { id } =  React.use(params);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -21,7 +22,9 @@ export default function EditProductPage({ params }) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Content-type': 'application/json',
           },
         });
         const product = await response.json();

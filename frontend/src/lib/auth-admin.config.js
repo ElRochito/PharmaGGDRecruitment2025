@@ -68,7 +68,7 @@ export const adminAuthConfig = {
 		signOut: async ({ token }) => {
 			if (token?.laravelAccessToken) {
 				try {
-					await fetch(`${process.env.BACKEND_URL}/admin/logout`, {
+					await fetch(`${process.env.BACKEND_URL}/admin/auth/logout`, {
 						method: "POST",
 						headers: {
 							Authorization: `Bearer ${token.laravelAccessToken}`,

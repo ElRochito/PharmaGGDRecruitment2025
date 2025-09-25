@@ -63,10 +63,12 @@ export const clientAuthConfig = {
 		signOut: async ({ token }) => {
 			if (token?.laravelAccessToken) {
 				try {
-					await fetch(`${process.env.BACKEND_URL}/logout`, {
+					console.warn(token?.laravelAccessToken)
+					await fetch(`${process.env.BACKEND_URL}/auth/logout`, {
 						method: "POST",
 						headers: {
-							Authorization: `Bearer ${token.laravelAccessToken}`,
+							'Accept': 'application/json',
+							'Authorization': `Bearer ${token.laravelAccessToken}`,
 							"Content-Type": "application/json"
 						}
 					})
