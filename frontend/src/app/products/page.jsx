@@ -90,7 +90,7 @@ console.warn(status)
                :
                user ? <button
                     onClick={() => handleAddToCart(product.id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
+                    className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-1 px-2 rounded mr-2"
                   >
                     Add
                   </button> : ''

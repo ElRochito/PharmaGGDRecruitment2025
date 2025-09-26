@@ -133,14 +133,14 @@ export default function CartPage() {
                 <div className="flex items-center">
                   <button
                     onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                    className="cursor-pointer bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
+                    className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-1 px-2 rounded mr-2"
                   >
                     -
                   </button>
                   <span className="text-lg">{item.quantity}</span>
                   <button
                     onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                    className="cursor-pointer bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded ml-2"
+                    className="cursor-pointer bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-1 px-2 rounded ml-2"
                   >
                     +
                   </button>
